@@ -1,0 +1,42 @@
+#
+
+/node_modules
+/.envrc
+
+/build/
+/dist/
+/tmp/
+/.envrc
+
+##
+# OS Files
+##
+
+# Mac OS
+.DS_Store
+._*
+.Trashes/
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+
+##
+# Ignored extensions
+##
+
+*.bak
+*.log
+*.swp
+*.tar
+*.tgz
+*.tmp
+*.zip
+
+# .gitignore

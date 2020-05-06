@@ -1,0 +1,30 @@
+# vi:syntax=sh
+
+function warn() {
+  local yellow=$'\e[93m'
+  local reset=$'\e[39m'
+  echo "[${yellow}WARNING${reset}] $*" >&2
+}
+
+export PATH="$PWD/bin:$PWD/proxy/node_modules/.bin:$PATH"
+
+export BUILD_DIR="$PWD/build"
+
+### Change Block
+# Only change items within this block
+#
+# (string) The organization from Apigee
+export APIGEE_ORGANIZATION=
+#
+# (string) The username to login as [if not set, will be prompted when running the scripts]
+export APIGEE_USERNAME=
+#
+# (string) The password to login with [if not set, will be prompted when running the scripts]
+export APIGEE_PASSWORD=
+#
+# (boolean) If true, the debug output will be printed
+export DEBUG=false
+#
+## End of Change Block
+
+[[ -z "${APIGEE_ORGANIZATION}" ]] && warn "APIGEE_ORGANIZATION env var is empty"

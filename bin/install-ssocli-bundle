@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/.init.sh
+
+function install-ssocli-bundle() {
+  local archive="${SSOCLI_BUNDLE_URL:-https://login.apigee.com/resources/scripts/sso-cli/ssocli-bundle.zip}"
+  local destination="${1:-$PWD/node_modules/.bin}"
+
+  local tempdir="$(mktemp -d)"
+  trap "rm -rf $tempdir" EXIT
+
+  [[ -f ssocli-bundle.zip ]] || (info "Downloading ssocli-bundle from $archive" && curl "$archive" -O)
+
+  debug "Unzipping ssocli-bundle.zip to $tempdir"
+  unzip -d "$tempdir" ssocli-bundle.zip
+
+  pushd "$tempdir" > /dev/null
+    info "Installing ssocli-bundle to $destination"
+    ./install -b "$destination"
+  popd >/dev/null
+
+  pushd "$destination" >/dev/null
+    info "Fixing permissions and cleaning up old versions of the clis"
+    for e in "$tempdir"/*; do
+      local exe="$(basename $e)"
+
+      [[ ! -f "$e" || ! -f "$exe" ]] && continue
+
+      debug "Setting $exe's permissions to rwxr-xr-x"
+      chmod 755 "$exe"
+
+      debug "Removing ${exe}-e"
+      rm -f "${exe}-e"
+    done
+  popd >/dev/null
+}
+
+if [[ ${BASH_SOURCE[0]} != $0 ]]; then
+  export -f install-ssocli-bundle
+else
+  set -euo pipefail
+
+  install-ssocli-bundle "${@:-}"
+  exit $?
+fi

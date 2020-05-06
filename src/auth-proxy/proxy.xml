@@ -1,0 +1,3 @@
+<APIProxy name="auth-proxy">
+  <Description>A Proxy protected by an API Key</Description>
+</APIProxy>

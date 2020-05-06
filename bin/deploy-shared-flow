@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/.init.sh
+
+function deploy-shared-flow() {
+  eval \
+    DEPLOY_COMMAND="deploysharedflow" \
+    DEPLOY_REQUIRED_DIR="sharedflowbundle" \
+      apigee-deploy ${@:-}
+}
+
+if [[ ${BASH_SOURCE[0]} != $0 ]]; then
+  export -f deploy-shared-flow
+else
+  set -euo pipefail
+
+  deploy-shared-flow "${@:-}"
+  exit $?
+fi

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SharedFlowBundle name="EnforceAPIKeyBundle">
+  <ConfigurationVersion majorVersion="4" minorVersion="0" />
+  <Description>Shared flow to protect your API with a key</Description>
+  <DisplayName>Enforce API Key</DisplayName>
+  <Policies>
+    <Policy>ValidateAPIKey</Policy>
+    <Policy>RemoveAPIKey</Policy>
+  </Policies>
+  <Resources/>
+  <Spec></Spec>
+  <SharedFlows>
+    <SharedFlow>EnforceAPIKey</SharedFlow>
+  </SharedFlows>
+</SharedFlowBundle>

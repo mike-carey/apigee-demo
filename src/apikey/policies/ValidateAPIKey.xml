@@ -1,0 +1,4 @@
+<VerifyAPIKey name="ValidateAPIKey">
+  <Description>Validate the API Key in the Query Params</Description>
+  <APIKey ref="request.queryparam.apikey"/>
+</VerifyAPIKey>

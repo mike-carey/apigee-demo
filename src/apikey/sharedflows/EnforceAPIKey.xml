@@ -1,0 +1,8 @@
+<SharedFlow name="EnforceAPIKey">
+  <Step>
+    <Name>ValidateAPIKey</Name>
+  </Step>
+  <Step>
+    <Name>RemoveAPIKey</Name>
+  </Step>
+</SharedFlow>

@@ -1,0 +1,4 @@
+<FlowCallout name="APIKeyRequired">
+    <DisplayName>Call out to the EnforceAPIKey Shared Flow</DisplayName>
+    <SharedFlowBundle>apikey</SharedFlowBundle>
+</FlowCallout>
