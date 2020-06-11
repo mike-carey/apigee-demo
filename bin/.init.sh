@@ -81,6 +81,43 @@ function get-auth-token() {
   echo "$TOKEN"
 }
 
+function call-apigeetool() {
+  local command="$1"
+  shift
+
+  local other_args="$*"
+
+  local url="${APIGEE_URL}"
+  local org="${APIGEE_ORGANIZATION}"
+
+  local username="${APIGEE_USERNAME:-}"
+  local password="${APIGEE_PASSWORD:-}"
+
+  function _apigeetool() {
+    local _password="$password"
+    local _token
+    if [[ "${1:-false}" == true ]]; then
+      _token='*****'
+      _password='*****'
+    else
+      _token="$(get-auth-token)"
+    fi
+
+    echo \
+      apigeetool "$command" \
+        -o "'$org'" \
+        -L "'$url'" \
+        -u "'$username'" \
+        -p "'$_password'" \
+        -t "'$_token'" \
+        -V \
+      $other_args
+  }
+
+  trace "Running \`$(_apigeetool true)\`"
+  eval $(_apigeetool)
+}
+
 ###
 # @env DEPLOY_COMMAND The apigeetool command to deploy with
 # @env DEPLOY_REQUIRED_DIR The directory that files are required to be in
@@ -89,12 +126,7 @@ function apigee-deploy() {
   local command="$DEPLOY_COMMAND"
   local required_dir="$DEPLOY_REQUIRED_DIR"
 
-  local url="${APIGEE_URL}"
-  local org="${APIGEE_ORGANIZATION}"
   local env="${APIGEE_ENV:-test}"
-
-  local username="${APIGEE_USERNAME:-}"
-  local password="${APIGEE_PASSWORD:-}"
 
   local build="${BUILD_DIR:-build}"
   local directory="$1"
@@ -102,6 +134,8 @@ function apigee-deploy() {
 
   # We can just use the directory name if not provided
   if [[ -z "${name}" ]]; then
+    debug "Using basename of '$directory'"
+    info "No name provided, using $(basename "$directory")"
     name="$(basename "$directory")"
   fi
 
@@ -115,30 +149,21 @@ function apigee-deploy() {
   for file in "$directory"/*; do
     local filename="$(basename "$file")"
     if [[ -d "$file" ]]; then
-      debug "Found a directory: $filename"
+      trace "Found a directory: $filename"
       cp -r "$file" "$out_dir"
     fi
 
     if [[ -f "$file" && "${file##*.}" == xml ]]; then
-      debug "Found a file: $filename"
+      trace "Found a file: $filename"
       cp "$file" "$out_dir"
     fi
   done
 
-  local token="$(get-auth-token)"
-
-  # check_credentials "$url" "$org" "$username" "$password"
   info "Asking the apigeetool to deploy $name from $base_dir"
-  apigeetool "$command" \
+  call-apigeetool "$command" \
     -n "$name" \
-    -o "$org" \
     -e "$env" \
-    -L "$url" \
-    -u "$username" \
-    -p "$password" \
-    -d "$base_dir" \
-    -t "$token" \
-    -V
+    -d "$base_dir"
 }
 
 function load_init() {
@@ -173,6 +198,13 @@ function load_init() {
       set $args
     } >&2
   }
+
+  function trace() {
+    if [[ "${TRACE:-false}" == true ]]; then
+      _log $'\e[95m' TRACE "$*"
+    fi
+  }
+  export -f trace
 
   function debug() {
     if [[ "${DEBUG:-false}" == true ]]; then

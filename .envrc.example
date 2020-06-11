@@ -25,6 +25,9 @@ export APIGEE_PASSWORD=
 # (boolean) If true, the debug output will be printed
 export DEBUG=false
 #
+# (boolean) If true, the trace output will be printed
+export TRACE=false
+#
 ## End of Change Block
 
 [[ -z "${APIGEE_ORGANIZATION}" ]] && warn "APIGEE_ORGANIZATION env var is empty"

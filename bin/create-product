@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"/.init.sh
+
+function create-product() {
+  local envs=${APIGEE_ENV:-test}
+
+  local approval_type=${APIGEE_APPROVAL_TYPE:-manual}
+  local product_name="$1"
+  shift
+  local proxies="$@"
+
+  info "If the product already exists, the apigeetool command will fail"
+  call-apigeetool createproduct \
+    --environments "$envs" \
+    --approvalType "$approval_type" \
+    --productName "$product_name" \
+    --proxies "$proxies"
+}
+
+if [[ ${BASH_SOURCE[0]} != $0 ]]; then
+  export -f create-product
+else
+  set -euo pipefail
+
+  create-product "${@:-}"
+  exit $?
+fi
