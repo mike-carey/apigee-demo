@@ -3,7 +3,7 @@
     "postinstall": "bash bin/install-ssocli-bundle"
   },
   "dependencies": {
-    "apigeetool": "^0.14.2"
+    "apigeetool": "^0.16.1"
   },
   "devDependencies": {}
 }
